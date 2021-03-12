@@ -20,9 +20,20 @@ class AppAsset extends AssetBundle
     public $basePath = '@webroot';
     public $baseUrl = '@web';
     public $css = [
-        'css/site.css',
+        'css/slick.css',
+        'css/slick-theme.css',
+        'css/nouislider.min.css',
+        'css/font-awesome.min.css',
+        'css/style.css',
+        '//fonts.googleapis.com/css?family=Montserrat:400,500,700',
+        // 'css/site.css', 
     ];
     public $js = [
+        'js/jquery.min.js',
+        'js/slick.min.js',
+        'js/nouislider.min.js',
+        'js/jquery.zoom.min.js',
+        'js/main.js',  
     ];
     public $depends = [
         'yii\web\YiiAsset',
