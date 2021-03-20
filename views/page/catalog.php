@@ -12,7 +12,7 @@ $this->title = 'Главная';
 			<div class="container">
 				<!-- row -->
 				<div class="row">
-					<!-- shop -->
+				<!-- shop -->
 					
                     <?php foreach ($categories as $key => $category):?> 
                         <div class="col-md-4 col-xs-6">
@@ -26,12 +26,57 @@ $this->title = 'Главная';
 							</div>
 						</div>
 					</div>
-                    <?php endforeach;?>
-                    
-					<!-- /shop -->
+                    <?php endforeach;?>                   
+				<!-- /shop -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+<!-- /SECTION -->
+
+		<!-- HOT DEAL SECTION -->
+		<div id="hot-deal" class="section">
+			<!-- container -->
+			<div class="container">
+				<!-- row -->
+				<div class="row">
+					<div class="col-md-12">
+						<div class="hot-deal">
+							<ul class="hot-deal-countdown">
+								<li>
+									<div>
+										<h3>02</h3>
+										<span>Дня</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>10</h3>
+										<span>Часов</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>34</h3>
+										<span>Минуты</span>
+									</div>
+								</li>
+								<li>
+									<div>
+										<h3>60</h3>
+										<span>Секунд</span>
+									</div>
+								</li>
+							</ul>
+							<h2 class="text-uppercase">Предложения недели</h2>
+							<p>Скидка до 50%!</p>
+							<a class="primary-btn cta-btn" href="#">Купить сейчас</a>
+						</div>
+					</div>
 				</div>
 				<!-- /row -->
 			</div>
 			<!-- /container -->
 		</div>
-		<!-- /SECTION -->
+		<!-- /HOT DEAL SECTION -->

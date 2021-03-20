@@ -11,6 +11,8 @@ use yii\filters\VerbFilter;
 // use app\models\ContactForm;
 use app\models\Categories;
 use app\models\Products;
+use app\models\SortForm;
+use yii\web\NotAcceptableHttpException;
 
 // Контроллер для страниц сайта
 class PageController extends Controller
@@ -71,30 +73,79 @@ class PageController extends Controller
         *Для страницы СПИСОК ТОВАРОВ
      */
     public function actionListproducts()
-    {
-        if(isset($_GET['id']) && $_GET['id'] != "" && filter_var($_GET['id'], FILTER_VALIDATE_INT))
-         {
-            $categories = Categories::find()->where(['id' => $_GET['id']])->asArray()->one();
-         
-            if(is_countable($categories)) 
-            {
-                $products = Products::find()->where(['category' => $_GET['id']])->asArray()->all();
+    {      
+        if(isset($_GET['id']) && $_GET['id'] != "" && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
+            $id = $_GET['id']; // id категории
+            
+            $categories = Categories::find()->where(['id' => $id])->asArray()->one();
+          
+            if(is_countable($categories)) {
                 
-                if(isset($_GET['view']) && $_GET['view'] == 1)
-                    {
-                        $view = 1;
-                    }    
-                else
-                    {
-                        $view = 0;
-                    }            
+                $model = new SortForm();
 
-                return $this->render('listproducts', compact('categories', 'products', 'view'));
+                $count_product = count(Products::find()->where(['category' => $id])->asArray()->all()); //подсчет числа товаров
+
+                $page = 1; // номер стр по умолчанию
+                $str = null; // принимает значение нужное для сортировки
+                $number = 12; //значение по умолчанию 
+
+                if(isset($_GET['page']) && $_GET['page'] != "" && filter_var($_GET['page'], FILTER_VALIDATE_INT)){
+                    $page = $_GET['page'];
+                } 
+                               
+                //Обработчик для формы сортировки и вывода числа товаров на странице   
+                if($model->load(Yii::$app->request->post()) && $model->validate()) {
+                    
+                    if(isset($model->number) && !empty($model->number)){
+                        $number = $model->number;
+                    }
+
+                    if(isset($model->str)){
+                        switch($model->str){
+                            case 0:
+                                $products = $this->selectListProd($id, ['price' => SORT_ASC], $number, $page);
+                                break;
+                            case 1:
+                                $products = $this->selectListProd($id, ['price' => SORT_DESC], $number, $page);
+                                break;
+                            case 2:
+                                // сортировка по рейтингу
+                                break;
+                            default:
+                                $products = $this->selectListProd($id, ['id' => SORT_ASC], $number, $page);
+                                break;
+                        }
+                    }else{
+                        $products = $this->selectListProd($id, ['id' => SORT_ASC], $number, $page);
+                    }                              
+                }else{
+                    $products = $this->selectListProd($id, ['id' => SORT_ASC], $number, $page);                    
+                }
+                
+                $count_pages = ceil($count_product / $number ); // кол-во странц для пагинации
+
+                if(isset($_GET['view']) && $_GET['view'] == 1){
+                        $view = 1;
+                }else{
+                        $view = 0;
+                }            
+
+                return $this->render('listproducts', compact('categories', 'products', 'view', 'model', 'count_pages', 'id', 'page'));
             }
                         
         }
         return $this->redirect(['page/catalog']);       
     }
+
+    private function selectListProd($id, $field_sort, $limit, $start){
+        if($start == 1){
+            $start = 0;
+        } else {
+            $start = ($start - 1) * $limit;
+        }
+            return Products::find()->where(['category' => $id])->asArray()->orderBy($field_sort)->limit($limit)->offset($start)->all();
+        }   
+
 
     /**
         *Для страницы КОНТАКТЫ
@@ -133,7 +184,22 @@ class PageController extends Controller
      */
     public function actionCardprod()
     {
-        return $this->render('cardprod');
+        if(isset($_GET['id']) && $_GET['id'] != "" && filter_var($_GET['id'], FILTER_VALIDATE_INT)){
+            $id = $_GET['id'];
+        }else {
+            throw new NotAcceptableHttpException;
+        }
+        
+        $products = Products::find()->where(['id' => $id])->asArray()->one();
+        $categories = Categories::find()->where(['id' => $id])->asArray()->one();
+
+        if(!is_array($products) || !is_countable($products)){
+            throw new NotAcceptableHttpException; 
+        }
+        
+        
+        return $this->render('cardprod', compact('categories', 'products','id'));
+
     } 
 
     /**
@@ -141,11 +207,57 @@ class PageController extends Controller
      */
     public function actionCart()
     {
-        return $this->render('cart');
+        $session = Yii::$app->session; // инициализация сессии
+        //$session = destroy();
+        $session->open(); // открытие сессии
+
+        if($session->has('productsSession')) {
+           $productsSession = $session->get('productsSession');
+        } else{
+            $productsSession = array();
+        }
+        
+        if(isset($_GET['id']) && !empty($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
+            $productsArray = Products::find()->where(['id' => $_GET['id']])->asArray()->one();
+            
+            if(is_array($productsArray) && !empty($productsArray)) {
+                $flag = false;
+                for ($i = 0; $i < count($productsSession); $i++) {
+                    if($productsSession[$i]['id'] == $_GET['id']) {
+                        $flag = true; // выполнился ли проход по циклу
+                        if($productsArray['count'] >= $productsSession[$i]['count'] + 1) {
+                            $productsSession[$i]['count']++;
+                        }
+                        break;
+                    }
+                }
+                if(!$flag) {
+                    array_push($productsSession, ['id' => $_GET['id'], 'count' => 1]);
+                }
+            }
+        }
+        
+        $session->set('productsSession', $productsSession);
+        $productsSession = $session->get('productsSession');
+
+        $arrayID = array();
+
+        foreach ($productsSession as $value) {
+            array_push($arrayID, $value['id']);
+        }
+
+        $prodArray = Products::find()->where(['id' => $arrayID])->asArray()->All();
+
+        foreach($prodArray as $key => $value) {
+            $prodArray[$key]['count_cart'] = $productsSession[$key]['count'];
+        }
+
+
+        return $this->render('cart', compact('prodArray'));
     } 
 
     /**
-        *Для страницы КОРЗИНА
+        *Для страницы ЗАКАЗ
      */
     public function actionListorder()
     {

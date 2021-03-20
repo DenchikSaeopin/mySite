@@ -1,9 +1,14 @@
 <?php
 
 use yii\helpers\Url;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 
-$this->title = 'Electro - магазин электроники';
+$this->title = "Electro | ".$categories['name'];
+
+$this->registerMetaTag(['name' => 'keywords', 'content' => 'электроника']);
+$this->registerMetaTag(['name' => 'keywords', 'content' => 'ноутбуки, планшеты']);
 ?>
 
 		<!-- SECTION -->
@@ -125,32 +130,31 @@ $this->title = 'Electro - магазин электроники';
 					<!-- STORE -->
 					<div id="store" class="col-md-9">
 						<!-- store top filter -->
-						<div class="store-filter clearfix">
+                        <div class="store-filter clearfix">
 							<div class="store-sort">
-								<label>
-									Сортировать по:
-									<select class="input-select">
-										<option value="0">Популярности</option>
-										<option value="1">Цене</option>
-									</select>
+                                <!-- Фильтр созданый через YII2 -->
+                                <?php $form = ActiveForm::begin(['enableClientScript' => false]);?> <!-- проверка на стороне клиента отключена (из-за ошибки jQuery) -->
+                                <label><strong>Сортировка по: </strong><? echo $form->field($model, 'str')->
+									dropDownList(['0' => 'Сначала подешевле', '1' => 'Сначала подороже', '2' => 'Популярности'], 
+									$params = ['prompt' => '-']);?>								
 								</label>
-
-								<label>
-									Показать по:
-									<select class="input-select">
-										<option value="0">10</option>
-										<option value="1">20</option>
-									</select>
+                                
+								<label><strong>Показать:</strong> <? echo $form->field($model, 'number')->
+									dropDownList(['12' => '12', '24' => '24', '48' => '48'], 
+									$params = ['options' => ['12' => ['Selected' => true]]]);?>
 								</label>
-							</div>
+                                <? echo Html::submitButton('Показать');?>
+                                <?php ActiveForm::end();?>
+                            </div>
+                                                   
                             <ul class="store-grid">                                         
-                            <?php if($view == 1):?>
-                                <li class=""><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id']]);?>"><i class="fa fa-th"></i></a></li>
-                                <li class="active"><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id'], 'view' => '1']);?>"><i class="fa fa-th-list"></i></a></li>
-                            <?php else:?>
-                                <li class="active"><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id']]);?>"><i class="fa fa-th"></i></a></li>
-                                <li class=""><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id'], 'view' => '1']);?>"><i class="fa fa-th-list"></i></a></li>
-                            <?php endif;?>
+                                <?php if($view == 1):?>
+                                    <li class=""><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id']]);?>"><i class="fa fa-th"></i></a></li>
+                                    <li class="active"><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id'], 'view' => '1']);?>"><i class="fa fa-th-list"></i></a></li>
+                                <?php else:?>
+                                    <li class="active"><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id']]);?>"><i class="fa fa-th"></i></a></li>
+                                    <li class=""><a href="<?=Url::toRoute(['page/listproducts', 'id' => $categories['id'], 'view' => '1']);?>"><i class="fa fa-th-list"></i></a></li>
+                                <?php endif;?>
                             </ul>
 						</div>
 						<!-- /store top filter -->
@@ -179,6 +183,7 @@ $this->title = 'Electro - магазин электроники';
                                                         <?php echo $product['name'];?>
                                                     </a>
                                                 </h3>
+												<p><?php echo $product['description']?></p>
                                                 <h4 class="product-price">$<?php echo $product['price'];?> 
                                                     <?php if($product['price_old'] != ""):?>
                                                         <del class="product-old-price">$<?php echo $product['price_old'];?></del>
@@ -192,22 +197,20 @@ $this->title = 'Electro - магазин электроники';
                                                     <i class="fa fa-star"></i>
                                                 </div>
                                                 <div class="product-btns">
-                                                    <!-- <a href="<?=Url::toRoute(['page/listorder', 'id' => $product['id']]);?>" class="add-to-wishlist">  -->
                                                         <button class="add-to-wishlist">
                                                             <i class="fa fa-heart-o"></i>                                           
                                                             <span class="tooltipp">В избранное</span>
                                                         </button>
-                                                    <!-- </a> -->
                                                     <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">Сравнение</span></button>
-                                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">Быстрый просмотр</span></button>
+                                                    
                                                 </div>
                                             </div>
                                             <div class="add-to-cart">
                                                 <a href="<?=Url::toRoute(['page/cart', 'id' => $product['id']]);?>">
-                                                <button class="add-to-cart-btn">
-                                                    <i class="fa fa-shopping-cart"></i>В корзину
-                                                </button>
-                                                <a>
+													<button class="add-to-cart-btn">
+														<i class="fa fa-shopping-cart"></i>В корзину
+													</button>
+                                                </a>
                                             </div>
                                         </div>            
                                     </div>    
@@ -243,23 +246,20 @@ $this->title = 'Electro - магазин электроники';
                                                         <i class="fa fa-star"></i>
                                                         <i class="fa fa-star"></i>
                                                     </div>
-                                                    <div class="product-btns">
-                                                        <!-- <a href="<?=Url::toRoute(['page/listorder', 'id' => $product['id']]);?>" class="add-to-wishlist">  -->
+                                                    <div class="product-btns">                                                        
                                                             <button class="add-to-wishlist">
                                                                 <i class="fa fa-heart-o"></i>                                           
                                                                 <span class="tooltipp">В избранное</span>
                                                             </button>
-                                                        <!-- </a> -->
                                                         <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">Сравнение</span></button>
-                                                        <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">Быстрый просмотр</span></button>
                                                     </div>
                                                 </div>
                                                 <div class="add-to-cart">
                                                     <a href="<?=Url::toRoute(['page/cart', 'id' => $product['id']]);?>">
-                                                    <button class="add-to-cart-btn">
-                                                        <i class="fa fa-shopping-cart"></i>В корзину
-                                                    </button>
-                                                    <a>
+														<button class="add-to-cart-btn">
+															<i class="fa fa-shopping-cart"></i>В корзину
+														</button>
+                                                    </a>
                                                 </div>
                                             </div>                     
                                     </div>        
@@ -270,13 +270,21 @@ $this->title = 'Electro - магазин электроники';
 					
 						<!-- store bottom filter -->
 						<div class="store-filter clearfix">
-							<ul class="store-pagination">
-								<li class="active">1</li>
-								<li><a href="#">2</a></li>
-								<li><a href="#">3</a></li>
-								<li><a href="#">4</a></li>
-								<li><a href="#"><i class="fa fa-angle-right"></i></a></li>
-							</ul>
+							<?php if(isset($count_pages) && $count_pages > 1){ ?>
+								<ul class="store-pagination">									
+									<?php for($i = 1; $i <= $count_pages; $i++) { ?>								
+										<?php if((!isset($page) && $i == 1) || $page == $i) {?>
+											<li class = "active"><span><?php echo $i;?></span></li>
+										<?php }else{?>												
+											<?php if(isset($_GET['view']) &&  $_GET['view'] == 1) {?>
+												<li><a href="<?=Url::toRoute(['page/listproducts', 'id' => $id, 'page' => $i, 'view' => 1]);?>"><?php echo $i;?></a></li>
+											<?php }else{?>			
+												<li><a href="<?=Url::toRoute(['page/listproducts', 'id' => $id, 'page' => $i]);?>"><?php echo $i;?></a></li>
+											<?php } ?>	
+										<?php } ?>	
+									<?php } ?>
+								</ul>
+							<?php }?> 
 						</div>
 						<!-- /store bottom filter -->
 					</div>

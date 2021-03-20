@@ -93,11 +93,7 @@ AppAsset::register($this);
 
 									<!-- Cart -->
 									<div class="dropdown">
-										<a href="#">
-											<i class="fa fa-shopping-cart"></i>
-											<span>Корзина</span>
-											<!-- <div class="qty">3</div> -->
-										</a>
+										<?php echo \app\components\CartWidget::widget();?>
 									</div>
 									<!-- /Cart -->
 
@@ -138,7 +134,6 @@ AppAsset::register($this);
                 'options' => ['class' => 'main-nav nav navbar-nav'],
                 'items' => [
                     ['label' => 'На главную', 'url' => ['/page/catalog']],
-                    ['label' => 'Список товаров', 'url' => ['/page/listproducts']],
                     ['label' => 'Контакты', 'url' => ['/page/contacts']],
                     // Yii::$app->user->isGuest ? (
                     //     ['label' => 'Login', 'url' => ['/site/login']]
@@ -198,7 +193,7 @@ AppAsset::register($this);
 		</div>
 		<!-- /BREADCRUMB -->
 
-		<!-- LISTPRODUCT -->
+		<!-- CONTENT -->
 		<?=$content;?>
 
 

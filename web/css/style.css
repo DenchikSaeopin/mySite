@@ -1524,7 +1524,7 @@ textarea.input {
 }
 
 .product-details .product-options .input-select {
-  width: 90px;
+  width: 100px;
 }
 
 .product-details .add-to-cart {
@@ -1984,7 +1984,7 @@ textarea.input {
   position: relative;
   display: block;
   width: 40px;
-  height: 40px;
+  /* height: 40px; */
   text-align: center;
   line-height: 40px;
   border: 1px solid #E4E7ED;
@@ -2226,4 +2226,14 @@ textarea.input {
   transform: translateY(0%);
 }
 
+.store-sort .control-label{
+  display: none;
+}
 
+.store-sort .form-group{
+  display: inline-block;
+}
+
+.field-sortform-number{
+  width: 67px;
+}
