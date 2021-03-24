@@ -3,6 +3,7 @@
 use yii\helpers\Url;
 
 $this->title = "Корзина";
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <!-- SECTION -->

@@ -6,6 +6,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 
 $this->title = "Electro | ".$categories['name'];
+$this->params['breadcrumbs'][] = $categories['name'];
 
 $this->registerMetaTag(['name' => 'keywords', 'content' => 'электроника']);
 $this->registerMetaTag(['name' => 'keywords', 'content' => 'ноутбуки, планшеты']);

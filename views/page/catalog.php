@@ -3,7 +3,7 @@
 /* @var $this yii\web\View */
 use yii\helpers\Url;
 
-$this->title = 'Главная';
+$this->title = 'Electro. Главная';
 ?>
 
 <!-- SECTION -->

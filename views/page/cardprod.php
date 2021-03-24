@@ -3,7 +3,8 @@
 /* @var $this yii\web\View */
 use yii\helpers\Url;
 
-$this->title = $categories['name']."|". $products["name"];
+$this->title = $products["name"];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <!-- SECTION -->
@@ -126,7 +127,7 @@ $this->title = $categories['name']."|". $products["name"];
 
 							<ul class="product-links">
 								<li>Категория:</li>
-								<li><a href="#"><?php echo $categories['name'];?></a></li>
+								<li><a href="#"><?php /* echo $categories['name']; */?></a></li>
 								<!-- <li><a href="#">Accessories</a></li> -->
 							</ul>
 

@@ -66,11 +66,6 @@ AppAsset::register($this);
 							<div class="col-md-6">
 								<div class="header-search">
 									<form>
-										<!-- <select class="input-select">
-											<option value="0">All Categories</option>
-											<option value="1">Category 01</option>
-											<option value="1">Category 02</option>
-										</select> -->
 										<input class="input" placeholder="Поиск">
 										<button class="search-btn">Найти</button>
 									</form>
@@ -120,7 +115,6 @@ AppAsset::register($this);
 			<!-- /HEADER -->
 
 			<!-- NAVIGATION -->
-
             <?php
             NavBar::begin([
                 // 'brandLabel' => Yii::$app->name,
@@ -152,24 +146,6 @@ AppAsset::register($this);
             NavBar::end();
             ?>    
 
-
-				<!-- container -->   
-				<!-- <div class="container"> -->
-					<!-- responsive-nav -->
-					<!-- <div id="responsive-nav"> -->
-						<!-- NAV -->
-						<!-- <ul class="main-nav nav navbar-nav"> -->
-							<!-- <li><a href="#">Планшеты</a></li>
-							<li><a href="#">Смартфоны</a></li>
-							<li><a href="#">Камеры</a></li>
-							<li><a href="#">Ноутбуки</a></li> -->
-						<!-- </ul> -->
-						<!-- /NAV -->
-					<!-- </div>            -->
-					<!-- /responsive-nav -->
-				<!-- </div> -->
-				<!-- /container -->
-
 			<!-- /NAVIGATION -->
 
 		<!-- BREADCRUMB -->
@@ -180,10 +156,15 @@ AppAsset::register($this);
 				<div class="row">
 					<div class="col-md-12">
 						<ul class="breadcrumb-tree">
-							<li><a href="#">ХЛЕБНЫЕ</a></li>
+						<?= Breadcrumbs::widget([
+							'homeLink' => ['label' => 'Главная', 'url' => ['/page/catalog']],
+            				'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+        				]) ?>
+													
+							<!-- <li><a href="#">ХЛЕБНЫЕ</a></li>
 							<li><a href="#">КРОШКИ</a></li>
 							<li><a href="#">КРОШКИ</a></li>
-							<li class="active">КРОШКИ (227,490 Results)</li>
+							<li class="active">КРОШКИ (227,490 Results)</li> -->
 						</ul>
 					</div>
 				</div>
@@ -342,7 +323,8 @@ AppAsset::register($this);
         <?/*= Breadcrumbs::widget([
             'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
         ]) */?>
-        <?//= Alert::widget() ?>
+        
+		<?//= Alert::widget() ?>
         <?//= $content ?>
 
 

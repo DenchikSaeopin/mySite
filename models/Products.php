@@ -10,4 +10,8 @@ class Products extends ActiveRecord
   {
     return 'products'; 
   }  
+
+  public function getCategories() {
+    return $this->hasOne(Categories::className(), ['id' => 'category']);
+  } 
 }

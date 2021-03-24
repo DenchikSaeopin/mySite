@@ -124,12 +124,12 @@ class PageController extends Controller
                 
                 $count_pages = ceil($count_product / $number ); // кол-во странц для пагинации
 
+                // функция selectListProd
                 if(isset($_GET['view']) && $_GET['view'] == 1){
                         $view = 1;
                 }else{
                         $view = 0;
                 }            
-
                 return $this->render('listproducts', compact('categories', 'products', 'view', 'model', 'count_pages', 'id', 'page'));
             }
                         
@@ -184,22 +184,19 @@ class PageController extends Controller
      */
     public function actionCardprod()
     {
-        if(isset($_GET['id']) && $_GET['id'] != "" && filter_var($_GET['id'], FILTER_VALIDATE_INT)){
+        if(isset($_GET['id']) && !empty($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)){
             $id = $_GET['id'];
         }else {
             throw new NotAcceptableHttpException;
         }
         
-        $products = Products::find()->where(['id' => $id])->asArray()->one();
-        $categories = Categories::find()->where(['id' => $id])->asArray()->one();
+        $products = Products::find()->with('categories')->where(['id' => $id])->asArray()->one();
 
         if(!is_array($products) || !is_countable($products)){
             throw new NotAcceptableHttpException; 
         }
-        
-        
-        return $this->render('cardprod', compact('categories', 'products','id'));
-
+               
+        return $this->render('cardprod', compact('products','id'));
     } 
 
     /**
@@ -208,7 +205,7 @@ class PageController extends Controller
     public function actionCart()
     {
         $session = Yii::$app->session; // инициализация сессии
-        //$session = destroy();
+        //$session->destroy();
         $session->open(); // открытие сессии
 
         if($session->has('productsSession')) {
@@ -252,7 +249,7 @@ class PageController extends Controller
             $prodArray[$key]['count_cart'] = $productsSession[$key]['count'];
         }
 
-
+        
         return $this->render('cart', compact('prodArray'));
     } 
 
